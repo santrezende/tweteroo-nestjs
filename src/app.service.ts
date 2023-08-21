@@ -10,8 +10,8 @@ import User from './entities/user.entitie';
 
 @Injectable()
 export class AppService {
-  users: User[];
-  tweets: Tweet[];
+  private users: User[];
+  private tweets: Tweet[];
 
   constructor() {
     this.users = [];
@@ -23,7 +23,8 @@ export class AppService {
   }
 
   postUser(newUser: CreateUserDTO) {
-    this.users.push(newUser);
+    const user = new User(newUser.username, newUser.avatar);
+    return this.users.push(user);
   }
 
   postTweet(newTweet: CreateTweetDTO) {
@@ -32,10 +33,8 @@ export class AppService {
     );
 
     if (userTweet) {
-      this.tweets.push({
-        user: userTweet,
-        tweet: newTweet.tweet,
-      });
+      const tweet = new Tweet(userTweet, newTweet.tweet);
+      return this.tweets.push(tweet);
     } else {
       throw new UnauthorizedException();
     }
