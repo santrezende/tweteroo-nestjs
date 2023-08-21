@@ -3,9 +3,10 @@ import {
   Controller,
   Get,
   HttpCode,
-  HttpException,
   HttpStatus,
+  Param,
   Post,
+  Query,
 } from '@nestjs/common';
 import { AppService } from './app.service';
 import { CreateTweetDTO } from './dto/tweet.dto';
@@ -26,14 +27,18 @@ export class AppController {
     return this.appService.postUser(body);
   }
 
-  @Post('/tweet')
+  @Post('/tweets')
   createTweet(@Body() body: CreateTweetDTO) {
-    try {
-      return this.appService.postTweet(body);
-    } catch (error) {
-      if (error.message === 'UNAUTHORIZED') {
-        throw new HttpException('UNAUTHORIZED', HttpStatus.UNAUTHORIZED);
-      }
-    }
+    return this.appService.postTweet(body);
+  }
+
+  @Get('/tweets')
+  getTweets(@Query('page') page: number | null) {
+    return this.appService.getTweets(page);
+  }
+
+  @Get('/tweets/:username')
+  getTweetsByUserName(@Param('username') username: string) {
+    return this.appService.getTweetsByUserName(username);
   }
 }
